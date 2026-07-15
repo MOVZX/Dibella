@@ -326,7 +326,7 @@ constructor(
                     sort = currentState.sort,
                     period = currentState.period,
                     nsfw = currentState.nsfw,
-                    cursor = cursor,
+                    cursor = cursor.substringBefore("|"),
                     tags = currentState.tagIds,
                 )
             )

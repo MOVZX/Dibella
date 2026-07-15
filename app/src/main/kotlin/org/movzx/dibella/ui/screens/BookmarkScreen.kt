@@ -283,7 +283,7 @@ fun BookmarkScreen(
                                             editOffset = bookmark.offset ?: 0
                                             editSort = bookmark.sort
                                         } else {
-                                            editCursor = bookmark.cursor
+                                            editCursor = bookmark.cursor.substringBefore("|")
                                             editTags = bookmark.tags ?: ""
                                             editSort = bookmark.sort
                                             editPeriod = bookmark.period
@@ -480,7 +480,7 @@ private fun buildMetadataString(bookmark: Bookmark): String {
         parts.add("Offset: ${bookmark.offset ?: 0}")
     } else {
         parts.add("Period: ${bookmark.period}")
-        parts.add("Cursor: ${bookmark.cursor}")
+        parts.add("Cursor: ${bookmark.cursor.substringBefore("|")}")
     }
 
     return parts.joinToString(" | ")

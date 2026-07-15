@@ -28,7 +28,7 @@ fun BookmarkEditDialog(
     val isSearchBookmark = bookmark.query != null
     var editTitle by remember(bookmark.title) { mutableStateOf(bookmark.title) }
     var editQuery by remember(bookmark.query ?: "") { mutableStateOf(bookmark.query ?: "") }
-    var editCursor by remember(bookmark.cursor ?: "") { mutableStateOf(bookmark.cursor ?: "") }
+    var editCursor by remember(bookmark.cursor ?: "") { mutableStateOf(bookmark.cursor?.substringBefore("|") ?: "") }
     var editOffset by remember(bookmark.offset ?: 0) { mutableIntStateOf(bookmark.offset ?: 0) }
     var editTags by remember(bookmark.tags ?: "") { mutableStateOf(bookmark.tags ?: "") }
     var editSort by remember(bookmark.sort) { mutableStateOf(bookmark.sort) }

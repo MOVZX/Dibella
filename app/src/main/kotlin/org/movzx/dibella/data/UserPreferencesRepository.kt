@@ -223,20 +223,29 @@ class UserPreferencesRepository(private val context: Context) {
         val backendEnabled: Boolean,
         val backendUrl: String,
         val backendApiKey: String,
+        val nsfw: String,
     )
 
     private val _interceptorSettings =
-        MutableStateFlow(InterceptorSettings("", false, false, "", ""))
+        MutableStateFlow(InterceptorSettings("", false, false, "", "", "None"))
     val interceptorSettings: StateFlow<InterceptorSettings> = _interceptorSettings.asStateFlow()
 
     init {
-        combine(apiKey, debugEnabled, backendEnabled, backendUrl, backendApiKey) {
-                key,
-                debug,
-                bEnabled,
-                bUrl,
-                bKey ->
-                InterceptorSettings(key, debug, bEnabled, bUrl, bKey)
+        combine(
+                apiKey,
+                debugEnabled,
+                backendEnabled,
+                backendUrl,
+                backendApiKey,
+            ) { key: String,
+                debug: Boolean,
+                bEnabled: Boolean,
+                bUrl: String,
+                bKey: String ->
+                InterceptorSettings(key, debug, bEnabled, bUrl, bKey, "None")
+            }
+            .combine(nsfw) { settings, nsfwLevel ->
+                settings.copy(nsfw = nsfwLevel)
             }
             .onEach { settings ->
                 _interceptorSettings.value = settings

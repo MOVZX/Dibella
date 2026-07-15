@@ -45,6 +45,11 @@ constructor(
                     "API Request | Type: $type, Limit: $limit, Cursor: $currentCursor",
                 )
 
+                val apiCursor = currentCursor?.let {
+                    val base = it.substringBefore("|")
+                    "$base|bdx:{}"
+                }
+
                 val response =
                     civitaiApi.getImages(
                         limit = limit,
@@ -53,11 +58,11 @@ constructor(
                         period = period,
                         type = type,
                         tags = tagIds,
-                        cursor = currentCursor,
+                        cursor = apiCursor,
                     )
 
                 val items = response.items.distinctBy { it.id }
-                val nextCursor = response.metadata.nextCursor?.substringBefore('|')
+                val nextCursor = response.metadata.nextCursor
 
                 val cacheItems = items.mapIndexed { index, image ->
                     FeedItemCache.fromCivitaiImage(image, type, startOrderIndex + index)
@@ -74,7 +79,10 @@ constructor(
 
                 Logger.e("Dibella_Net", "API Error (Attempt $attempt): ${e.message}")
 
-                val newCursor = currentCursor?.toLongOrNull()?.let { (it + 1).toString() }
+                val newCursor = currentCursor?.let {
+                    val base = it.substringBefore("|").toLongOrNull()?.let { n -> (n + 1).toString() }
+                    base
+                }
 
                 if (newCursor != null) {
                     currentCursor = newCursor

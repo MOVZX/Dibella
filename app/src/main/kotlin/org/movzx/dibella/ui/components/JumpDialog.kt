@@ -18,6 +18,7 @@ import org.movzx.dibella.R
 fun JumpDialog(currentCursor: String?, onApply: (String) -> Unit, onDismiss: () -> Unit) {
     val view = LocalView.current
     var targetCursor by remember { mutableStateOf("") }
+    val displayCursor = currentCursor?.substringBefore("|")
 
     val scale by
         animateFloatAsState(
@@ -33,7 +34,7 @@ fun JumpDialog(currentCursor: String?, onApply: (String) -> Unit, onDismiss: () 
     ModernDialog(
         title = stringResource(R.string.dialog_jump_title),
         icon = Icons.Default.ArrowForward,
-        message = String.format(stringResource(R.string.dialog_jump_msg), currentCursor ?: "N/A"),
+        message = String.format(stringResource(R.string.dialog_jump_msg), displayCursor ?: "N/A"),
         onConfirm = {
             view.performHapticFeedback(android.view.HapticFeedbackConstants.CONFIRM)
 

@@ -17,12 +17,21 @@ class CivitaiInterceptor @Inject constructor(private val repository: UserPrefere
         val backendEnabled = settings.backendEnabled
         val backendUrl = settings.backendUrl
         val backendApiKey = settings.backendApiKey
+        val nsfwLevel = settings.nsfw
         val original = chain.request()
         var request = original
         val host = request.url.host
         val path = request.url.encodedPath
-        val isCivitai = host.contains("civitai.com")
+        val isCivitai = host.contains("civitai.com") || host.contains("civitai.red")
         val isApi = isCivitai && path.contains("/api/")
+
+        if (isApi && nsfwLevel != "None" && isApi) {
+            val currentUrl = request.url.toString()
+            val rewrittenUrl = currentUrl.replace("civitai.com", "civitai.red")
+
+            if (rewrittenUrl != currentUrl)
+                request = request.newBuilder().url(rewrittenUrl).build()
+        }
 
         if (isCivitai && backendEnabled && !isApi) {
             val url = request.url.toString()
